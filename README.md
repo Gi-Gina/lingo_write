@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+LingoWrite
+
+LingoWrite is a lightweight, user-friendly writing assistant designed to help users improve their English writing skills through clear explanations, structured guidance, and instant feedback.
 
 ## Getting Started
 
