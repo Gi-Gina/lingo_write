@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <header>
+           <div className="flex justify-center bg-blue-200 pt-5 pb-5">
+        <h1 className="text-4xl font-bold">LingoWrite</h1>
+      </div>
+      <div className="bg-blue-600">
+        <nav className="flex gap-6 justify-center pt-4 pb-4 text-white font-semibold ">
+          <Link href="/" className="hover:text-foreground">Home</Link>
+          <Link href="#features" className="hover:text-foreground">Features</Link>
+          <Link href="#exercises" className="hover:text-foreground">Exercises</Link>
+          <Link href="#test" className="hover:text-foreground">Level Test</Link>
+          <Link href="#about" className="hover:text-foreground scroll-smooth">About</Link>
+        </nav>
+      </div>
+        </header>
         {children}
+      <footer>
+        <div className="bg-foreground text-background pt-10 pb-10 text-xl text-center">
+          <p>&copy; 2025 LingoWrite. All rights reserved.</p>
+        </div>
+      </footer>
       </body>
     </html>
   );
