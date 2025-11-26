@@ -732,7 +732,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ lessonId, lesson, lessonColor }
             {/* Summary View (Visible when isDetailView is false) */}
             <div 
                 id={`lesson-summary-${lessonId}`} 
-                className={`content-section  ${isDetailView ? 'hidden' : 'block'}`}
+                className={`content-section py-6  ${isDetailView ? 'hidden' : 'block'}`}
             >
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">{lesson.nav} </h2>
                 <p className="text-lg text-gray-600 mb-6">{lesson.summary}</p>
