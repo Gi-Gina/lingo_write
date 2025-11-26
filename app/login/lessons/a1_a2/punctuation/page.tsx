@@ -302,7 +302,7 @@ const PunctuationMasteryGuide: React.FC = () => {
                 </p>
             </header>
 
-            <div className="max-w-4xl mx-auto min-h-screen">
+            <div className="max-w-5xl mx-auto min-h-screen">
                 <main id="content-area" className="p-10 md:p-8 space-y-8">
                             {punctuationData.map((lesson, index) => {
                                 const key = `l${index + 1}`;
