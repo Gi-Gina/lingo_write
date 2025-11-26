@@ -1,5 +1,7 @@
 "use client";
 
+import QualifierReferenceGuide from "./qualifier/page";
+
 export default function B1B2Lessons() {
   return (
     <div className="p-10">
@@ -7,7 +9,7 @@ export default function B1B2Lessons() {
       <p className="text-lg">
         Welcome to the C1 - C2 English lessons. Here you will find advanced-level materials to help you refine your English grammar, vocabulary, and writing skills to a proficient level.
       </p>
-      {/* Add more lesson content here */}
+      <QualifierReferenceGuide />
     </div>
   );
 }
