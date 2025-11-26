@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import PartsOfSpeech from "./part_of_speech/page";
+import PunctuationMasteryGuide from "./punctuation/page";
 
 export default function A1A2Lessons() {
   const [showParts, setShowParts] = useState(false);
@@ -34,6 +35,29 @@ export default function A1A2Lessons() {
           </div>
         </div>
       )}
+
+      {!showParts ? (
+        <button
+          onClick={() => setShowParts(true)}
+          className="mt-4 text-blue-600 hover:underline"
+        >
+          View: Punctation
+        </button>
+      ) : (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowParts(false)}
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          >
+            ← Back to Lessons
+          </button>
+
+          <div className="bg-white rounded-lg shadow p-4">
+            <PunctuationMasteryGuide />
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }
