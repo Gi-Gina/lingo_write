@@ -1,6 +1,7 @@
 "use client";
 
 import QualifierReferenceGuide from "./qualifier/page";
+import QuantifierReferenceGuide from "./quantifier/page";
 
 export default function B1B2Lessons() {
   return (
@@ -10,6 +11,7 @@ export default function B1B2Lessons() {
         Welcome to the C1 - C2 English lessons. Here you will find advanced-level materials to help you refine your English grammar, vocabulary, and writing skills to a proficient level.
       </p>
       <QualifierReferenceGuide />
+      <QuantifierReferenceGuide />
     </div>
   );
 }
