@@ -27,7 +27,7 @@ const FormalAdjectiveGuide = React.lazy(() =>
   }))
 );
 
-const AdjectiveGuide = React.lazy(() =>
+const FormalAdverbGuide = React.lazy(() =>
   import("./adverb/page").then((mod) => ({
     default: mod.default,
   }))
@@ -38,6 +38,7 @@ export default function A1A2Lessons() {
   const [showPunct, setShowPunct] = useState(false);
   const [showPreps, setShowPreps] = useState(false);
   const [showAdj, setShowAdj] = useState(false);
+  const [showAdv, setShowAdv] = useState(false);
 
   return (
     <div className="p-10">
@@ -151,7 +152,30 @@ export default function A1A2Lessons() {
       )}
       </div>
       {/* ================= ADVERBS ================= */}
-
+       <div>
+      {!showAdv ? (
+        <button
+          onClick={() => setShowAdv(true)}  
+          className="mt-4 ml-6 text-blue-600 hover:underline"
+        >
+          View: Adverbs
+        </button>  
+      ) : (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowAdv(false)}  
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          > 
+            ← Back to Lessons
+          </button>   
+          <div className="bg-white rounded-lg shadow p-4">
+            <Suspense fallback={<div>Loading Adverbs…</div>}>
+              <FormalAdverbGuide />
+            </Suspense>
+          </div>
+        </div>
+      )}
+      </div>
     </div>
   );
 }

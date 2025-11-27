@@ -541,10 +541,10 @@ const FormalAdjectiveGuide: React.FC = () => {
         <div>
             <header className="text-center mt-12">
                 <h1 className="text-5xl font-extrabold text-blue-900 mb-3 tracking-tight">
-                    Mastering Essay Writing: Types, Structures, and Strategies
+                    Formal Adjective Guide for Academic Writing
                 </h1>
                 <p className="text-xl text-gray-500 font-light">
-                    Learn how to write clear, effective essays across all major types, from narrative and descriptive to specific formats. This comprehensive guide covers structure, organization, and practical strategies, helping you craft essays that communicate ideas with clarity and impact.
+                    Master the art of using adjectives effectively in formal contexts.
                 </p>
             </header>
 
