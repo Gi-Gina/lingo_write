@@ -44,7 +44,7 @@ const QuantifierReferenceGuide: React.FC = () => {
 
             <div className="main-container">
                 
-                <header className="text-center mb-12">
+                <header className="text-center mb-6 mt-6">
                     <h1 className="text-5xl font-extrabold text-blue-900 mb-3 tracking-tight">
                         Complete Quantifier Reference Guide
                     </h1>

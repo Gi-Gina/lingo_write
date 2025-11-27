@@ -31,6 +31,7 @@ const customStyles = `
                     0 2px 4px -2px rgba(0, 0, 0, 0.03);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border-left-width: 6px;
+
     }
 
 

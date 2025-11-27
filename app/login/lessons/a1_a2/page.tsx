@@ -21,10 +21,17 @@ const PrepositionsLesson = React.lazy(() =>
   }))
 );
 
+const FormalAdjectiveGuide = React.lazy(() =>
+  import("./adjective/page").then((mod) => ({
+    default: mod.default,
+  }))
+);
+
 export default function A1A2Lessons() {
   const [showParts, setShowParts] = useState(false);
   const [showPunct, setShowPunct] = useState(false);
   const [showPreps, setShowPreps] = useState(false);
+  const [showAdj, setShowAdj] = useState(false);
 
   return (
     <div className="p-10">
@@ -107,6 +114,31 @@ export default function A1A2Lessons() {
           <div className="bg-white rounded-lg shadow p-4">
             <Suspense fallback={<div>Loading Prepositions…</div>}>
               <PrepositionsLesson />
+            </Suspense>
+          </div>
+        </div>
+      )}
+      </div>
+      {/* ================= ADJECTIVES ================= */}
+      <div>
+      {!showAdj ? (
+        <button
+          onClick={() => setShowAdj(true)}  
+          className="mt-4 ml-6 text-blue-600 hover:underline"
+        >
+          View: Adjectives
+        </button>  
+      ) : (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowAdj(false)}  
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          > 
+            ← Back to Lessons
+          </button>   
+          <div className="bg-white rounded-lg shadow p-4">
+            <Suspense fallback={<div>Loading Adjectives…</div>}>
+              <FormalAdjectiveGuide />
             </Suspense>
           </div>
         </div>
