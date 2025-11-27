@@ -1,21 +1,159 @@
 "use client";
-import React, { useState, useEffect, useMemo } from 'react';
 
-// --- 1. DATA DEFINITIONS ---
+import React, { useState, useEffect } from 'react';
 
-// Define the color maps used for styling in Tailwind CSS
-const lessonColors: Record<string, string> = {
-    "l1": "indigo",
+// --- STYLES (Translated from the <style> block and injected) ---
+const customStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    
+    @media (max-width: 640px) {
+    .lesson-table thead { display: none; }
+    .lesson-table td { display: block; width: 100%; }
+    .lesson-table td::before { content: attr(data-label); font-weight: bold; display: block; }
+    }
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #eef2f5;
+    }
+
+    .lesson-card {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        /* Removed the general 'border: 1px solid #e0e7ff;' from CSS
+           to allow Tailwind classes to control all 4 borders without conflict. */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                    0 2px 4px -2px rgba(0, 0, 0, 0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left-width: 6px;
+
+    }
+
+
+    .lesson-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1),
+                    0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    .content-section {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Button base */
+    .primary-btn {
+        transition: all 0.3s ease;
+    }
+
+    /* Table styling */
+    .lesson-table th, .lesson-table td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .lesson-table th {
+        background-color: #f7f8fc;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #4b5563;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .lesson-table tbody tr:nth-child(even) {
+        background-color: #fafafa;
+    }
+    .lesson-table tbody tr:hover {
+        background-color: #eff6ff;
+    }
+    .lesson-table strong {
+        color: #1d4ed8;
+    }
+    .lesson-table code {
+        background-color: #e0e7ff;
+        color: #4338ca;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+    /* Added for absolute adjectives */
+    .line-through-red {
+        text-decoration: line-through;
+        color: #ef4444; /* red-500 */
+    }
+    /* Reduce padding on all lesson content boxes */
+    .p-6 {
+        padding: 1rem !important;
+    }
+
+    /* Reduce table cell spacing */
+    .lesson-table th,
+    .lesson-table td {
+        padding: 6px 10px !important;
+    }
+
+    /* Reduce spacing between items */
+    .space-y-6 > * + * {
+        margin-top: 1rem !important;
+    }
+
+    .space-y-2 > * + * {
+        margin-top: 0.3rem !important;
+    }
+
+    /* Make paragraphs more compact */
+    .lesson-content p {
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Make headings smaller & tighter */
+    .lesson-content h3 {
+        margin-bottom: 0.4rem !important;
+    }
+
+    /* Make code blocks compact */
+    .lesson-content code {
+        padding: 8px !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Reduce table heading height */
+    .lesson-table th {
+        font-size: 0.95rem !important;
+    }
+
+    /* Reduce general spacing */
+    .lesson-content div {
+        margin-bottom: 0.75rem !important;
+    }
+`;
+
+// --- DATA STRUCTURES (Translated from the <script> block) ---
+type LessonId = 'l1' | 'l2' | 'l3' | 'l4' | 'l5' | 'l6' | 'l7' | 'l8' | 'l9' | 'l10';
+
+interface Lesson {
+    nav: string;
+    title: string;
+    summary: string;
+    html: string;
+}
+
+const lessonColors: Record<LessonId, string> = {
+    "l1": "blue",
     "l2": "purple",
     "l3": "green",
-    "l4": "pink",
+    "l4": "red",
     "l5": "cyan",
-    "l6": "orange",
+    "l6": "indigo",
     "l7": "yellow",
-    "l8": "red"
+    "l8": "pink",
+    "l9": "indigo",
+    "l10": "teal",
 };
 
-// Define the specific Tailwind classes for each color
 const colorShades: Record<string, { text: string; border: string; bg: string; border_light: string }> = {
     "indigo": { text: "text-indigo-700", border: "border-indigo-500", bg: "bg-indigo-50", border_light: "border-indigo-200" },
     "purple": { text: "text-purple-700", border: "border-purple-500", bg: "bg-purple-50", border_light: "border-purple-200" },
@@ -24,15 +162,53 @@ const colorShades: Record<string, { text: string; border: string; bg: string; bo
     "cyan": { text: "text-cyan-700", border: "border-cyan-500", bg: "bg-cyan-50", border_light: "border-cyan-200" },
     "orange": { text: "text-orange-700", border: "border-orange-500", bg: "bg-orange-50", border_light: "border-orange-200" },
     "yellow": { text: "text-yellow-700", border: "border-yellow-500", bg: "bg-yellow-50", border_light: "border-yellow-200" },
-    "red": { text: "text-red-700", border: "border-red-500", bg: "bg-red-50", border_light: "border-red-200" }
+    "red": { text: "text-red-700", border: "border-red-500", bg: "bg-red-50", border_light: "border-red-200" },
+    "blue": { text: "text-blue-700", border: "border-blue-500", bg: "bg-blue-50", border_light: "border-blue-200"},
+    "teal": { text: "text-teal-700", border: "border-teal-500", bg: "bg-teal-50", border_light: "border-teal-200"}
 };
 
-interface Lesson {
-    nav: string;
-    title: string;
-    summary: string;
-    html: string;
-}
+// Helper function to replicate the string replacement logic for raw HTML strings
+// This is critical for maintaining the correct color in the detail view content.
+const replaceColorClasses = (html: string, lessonColor: string) => {
+    const shades = colorShades[lessonColor];
+    if (!shades) return html;
+    
+    let result = html;
+    
+    // Default text colors used in the raw HTML template
+    const defaultTexts = ["text-indigo-700", "text-purple-700", "text-green-700", "text-pink-700", "text-cyan-700", "text-orange-700", "text-yellow-700", "text-red-700", "text-blue-700", "text-teal-700"];
+    defaultTexts.forEach(defaultText => {
+        result = result.replace(new RegExp(defaultText, 'g'), shades.text);
+    });
+
+    // Default border colors
+    const defaultBorders = ["border-indigo-500", "border-purple-500", "border-green-500", "border-pink-500", "border-cyan-500", "border-orange-500", "border-yellow-500", "border-red-500", "border-blue-500", "border-teal-500"];
+    defaultBorders.forEach(defaultBorder => {
+        result = result.replace(new RegExp(defaultBorder, 'g'), shades.border);
+    });
+    
+    // Default background and light border colors (used for highlight boxes)
+    const defaultLightClasses = [
+        { bg: "bg-indigo-50", border: "border-indigo-200", text: "text-indigo-800" },
+        { bg: "bg-purple-50", border: "border-purple-200", text: "text-purple-800" },
+        { bg: "bg-green-50", border: "border-green-200", text: "text-green-800" },
+        { bg: "bg-pink-50", border: "border-pink-200", text: "text-pink-800" },
+        { bg: "bg-cyan-50", border: "border-cyan-200", text: "text-cyan-800" },
+        { bg: "bg-red-50", border: "border-red-200", text: "text-red-800" },
+        { bg: "bg-yellow-50", border: "border-yellow-200", text: "text-yellow-800" },
+        { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-800" },
+    ];
+    
+    // Replace all default light classes with the lesson's target light classes
+    defaultLightClasses.forEach(defaultClass => {
+        result = result.replace(new RegExp(defaultClass.bg, 'g'), shades.bg);
+        result = result.replace(new RegExp(defaultClass.border, 'g'), shades.border_light);
+        result = result.replace(new RegExp(defaultClass.text, 'g'), shades.text.replace('700', '800'));
+    });
+
+    return result;
+};
+
 
 const lessonContent: Record<string, Lesson> = {
     "l1": {
@@ -225,263 +401,171 @@ const lessonContent: Record<string, Lesson> = {
     }
 };
 
-// --- 2. DYNAMIC COLOR REPLACEMENT LOGIC ---
-
-/**
- * Replaces hardcoded color classes in the HTML string with the dynamic color.
- * This mimics the JavaScript logic from the original HTML.
- */
-const replaceColorClasses = (html: string, lessonColor: string): string => {
-    const shades = colorShades[lessonColor];
-
-    // The logic below ensures that even if the source HTML template used 
-    // a different default color (like 'indigo' for L1) it gets replaced 
-    // with the current lesson's color.
-
-    let coloredHtml = html;
-
-    // 1. General h3 headings (text-*-700 -> dynamic text-COLOR-700)
-    coloredHtml = coloredHtml.replace(/text-(indigo|purple|green|pink|cyan|orange|yellow|red)-700/g, shades.text);
-
-    // 2. Code block left borders (border-*-500 -> dynamic border-COLOR-500)
-    coloredHtml = coloredHtml.replace(/border-(indigo|purple|green|pink|cyan|orange|yellow|red)-500/g, shades.border);
-
-    // 3. Special highlighted blocks (bg-*-50/border-*-200 -> dynamic)
-    coloredHtml = coloredHtml.replace(/bg-(indigo|purple|green|pink|cyan|orange|yellow|red)-50/g, shades.bg);
-    coloredHtml = coloredHtml.replace(/border-(indigo|purple|green|pink|cyan|orange|yellow|red)-200/g, shades.border_light);
-
-    // 4. Specific text color for boxes (text-*-800 -> dynamic text-COLOR-800)
-    coloredHtml = coloredHtml.replace(/text-(indigo|purple|green|pink|cyan|orange|yellow|red)-800/g, shades.text.replace('700', '800'));
-
-    return coloredHtml;
-};
-
-// --- 3. LESSON COMPONENT ---
+// --- REACT COMPONENTS ---
 
 interface LessonCardProps {
-    lessonId: string;
+    lessonId: LessonId;
+    lesson: Lesson;
+    lessonColor: string;
 }
 
-const LessonCard: React.FC<LessonCardProps> = ({ lessonId }) => {
-    const [isDetail, setIsDetail] = useState(false);
-    const lesson = lessonContent[lessonId];
-    const colorName = lessonColors[lessonId];
-    const shades = colorShades[colorName];
-
-    // Generate the full button/hover classes once
-    const buttonClasses = `bg-${colorName}-600 hover:bg-${colorName}-700`;
+const LessonCard: React.FC<LessonCardProps> = ({ lessonId, lesson, lessonColor }) => {
+    // State to manage whether the detail view is visible (mimics the original JS toggle)
+    const [isDetailView, setIsDetailView] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     
-    // Generate the dynamic content HTML with correct colors
-    const coloredHtml = useMemo(() => replaceColorClasses(lesson.html, colorName), [lesson.html, colorName]);
-    const mainTitleColorClass = shades.text.replace('700', '800');
+    // Dynamically constructing Tailwind classes
+    const colorShade = colorShades[lessonColor];
 
-    // Scroll to the detail view when it opens
-    useEffect(() => {
-        if (isDetail) {
-            const detailDiv = document.getElementById(`lesson-container-${lessonId}`);
-            if (detailDiv) {
-                detailDiv.scrollIntoView({ behavior: "smooth" });
+    // Explicit literal class maps so Tailwind's parser sees the classes at build time
+    const buttonClassesMap: Record<string, string> = {
+        blue: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-blue-600 hover:bg-blue-700',
+        purple: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-purple-600 hover:bg-purple-700',
+        green: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-green-600 hover:bg-green-700',
+        red: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-red-600 hover:bg-red-700',
+        cyan: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-cyan-600 hover:bg-cyan-700',
+        indigo: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-indigo-600 hover:bg-indigo-700',
+        yellow: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-yellow-600 hover:bg-yellow-700',
+        pink: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-pink-600 hover:bg-pink-700',
+        teal: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-teal-600 hover:bg-teal-700',
+        orange: 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-orange-600 hover:bg-orange-700',
+    };
+
+    const borderClassesMap: Record<string, string> = {
+        blue: 'border-blue-600 hover:border-blue-700',
+        purple: 'border-purple-600 hover:border-purple-700',
+        green: 'border-green-600 hover:border-green-700',
+        red: 'border-red-600 hover:border-red-700',
+        cyan: 'border-cyan-600 hover:border-cyan-700',
+        indigo: 'border-indigo-600 hover:border-indigo-700',
+        yellow: 'border-yellow-600 hover:border-yellow-700',
+        pink: 'border-pink-600 hover:border-pink-700',
+        teal: 'border-teal-600 hover:border-teal-700',
+        orange: 'border-orange-600 hover:border-orange-700',
+    };
+
+    const buttonClass = buttonClassesMap[lessonColor] ?? 'primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl bg-gray-600 hover:bg-gray-700';
+
+    // Build card classes using literal mapped strings so Tailwind includes them in the build
+    const cardClass = `lesson-card border-l-8 border-solid ${borderClassesMap[lessonColor] ?? 'border-gray-500'} border-gray-200 px-6`;
+
+    // Fallback color hex map so hover/border colors work even if Tailwind isn't built
+    const colorHexMap: Record<string, { default: string; hover: string }> = {
+        blue: { default: '#2563eb', hover: '#1e40af' }, // blue-600, blue-700
+        purple: { default: '#7c3aed', hover: '#6d28d9' },
+        green: { default: '#16a34a', hover: '#15803d' },
+        red: { default: '#dc2626', hover: '#b91c1c' },
+        cyan: { default: '#0891b2', hover: '#0e7490' },
+        indigo: { default: '#4f46e5', hover: '#4338ca' },
+        yellow: { default: '#d97706', hover: '#b45309' },
+        pink: { default: '#ec4899', hover: '#db2777' },
+        teal: { default: '#0d9488', hover: '#0f766e' },
+        orange: { default: '#f97316', hover: '#ea580c' },
+    };
+
+    const hexColors = colorHexMap[lessonColor] ?? { default: '#6b7280', hover: '#4b5563' };
+
+    const mainTitleColorClass = colorShade.text.replace('700', '800'); // Use 800 for main title
+
+    const handleViewDetail = () => {
+        setIsDetailView(true);
+        // Optional: Scroll to the detail view, as in the original JS
+        setTimeout(() => {
+            const detailElement = document.getElementById(`lesson-container-${lessonId}`);
+            if (detailElement) {
+                detailElement.scrollIntoView({ behavior: "smooth", block: "start" });
             }
-        }
-    }, [isDetail, lessonId]);
+        }, 0);
+    };
 
-    const handleViewDetail = () => setIsDetail(true);
-    const handleBackToSummary = () => setIsDetail(false);
+    const handleBackToSummary = () => {
+        setIsDetailView(false);
+    };
 
-    // The combined classes for the outer card container
-    const cardClasses = `lesson-card colored-left border-l-[8px] border-l-solid border-l-${colorName}-500`;
+    // Process the raw HTML content to apply the correct color classes based on the lesson
+    const lessonDetailContent = replaceColorClasses(lesson.html, lessonColor);
 
-    // Render Summary View
-    if (!isDetail) {    
-        return (
-            <div className={`${cardClasses} border-l-8 border-l-solid border-l-${colorName}-500 content-section py-6`}>
-                <h2 className="text-2xl font-bold text-gray-800 mb-4 ml-2">{lesson.nav}</h2>
-                <p className="text-lg text-gray-600 mb-6 ml-2">{lesson.summary}</p>
-                <button 
-                    onClick={handleViewDetail}
-                    className={`primary-btn px-8 py-3 text-white font-semibold rounded-lg shadow-xl ${buttonClasses} ml-2`}
-                >
+    return (
+        <div
+            id={`lesson-container-${lessonId}`}
+            className={cardClass}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            style={{ borderLeftColor: isHovered ? hexColors.hover : hexColors.default }}
+        >
+            {/* Summary View (Visible when isDetailView is false) */}
+            <div 
+                id={`lesson-summary-${lessonId}`} 
+                className={`content-section py-6  ${isDetailView ? 'hidden' : 'block'} max-w-5xl`}
+            >
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">{lesson.nav} </h2>
+                <p className="text-lg text-gray-600 mb-6">{lesson.summary}</p>
+                <button onClick={handleViewDetail} className={buttonClass}>
                     View Full Lesson Details →
                 </button>
             </div>
-        );
-    }
 
-    // Render Detail View
-    return (
-        <div className={`${cardClasses} content-section px-6 py-6`}>
-            <button 
-                onClick={handleBackToSummary}
-                className="mb-6 px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 ml-2"
+            {/* Detail View (Visible when isDetailView is true) */}
+            <div 
+                id={`lesson-detail-${lessonId}`} 
+                className={`mt-8 mb-8 py-6 content-section ${isDetailView ? 'block' : 'hidden'}`}
             >
-                ← Back to Summary
-            </button>
-
-            <h3 className={`text-2xl font-bold ${mainTitleColorClass} mb-6 ml-2`}>{lesson.title}</h3>
-            
-            {/* DANGER: Using dangerouslySetInnerHTML is required here to render the 
-              HTML template strings defined in lessonContent.
-            */}
-            <div className="space-y-8 ml-2" dangerouslySetInnerHTML={{ __html: coloredHtml }} />
+                <button 
+                    onClick={handleBackToSummary}
+                    className="mb-6 px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
+                >
+                    ← Back to Summary
+                </button>
+                <h3 className={`text-2xl font-bold ${mainTitleColorClass} mb-6`}>{lesson.title}</h3>
+                {/* DANGER: Using dangerouslySetInnerHTML to render the large HTML string */}
+                <div className="space-y-8 lesson-content" dangerouslySetInnerHTML={{ __html: lessonDetailContent }} />
+            </div>
         </div>
     );
 };
 
-// --- 4. MAIN COMPONENT ---
 
-export const FormalAdjectiveGuide: React.FC = () => {
-    
-    // Custom styles derived from the HTML <style> block.
-    // NOTE: In a production React application, these rules should ideally be 
-    // refactored into global CSS or configured via Tailwind overrides.
-    const customStyles = `
-        /* Import Inter Font */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-
-        /* Custom Global Styles from HTML */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #eef2f5;
-        }
-
-        .lesson-card {
-            background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .lesson-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-        }
-
-        .content-section {
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .colored-left {
-            border-left-width: 8px;
-            border-left-style: solid;
-            border-radius: 1rem;
-            padding-left: 1.2rem;
-        }
-        
-        /* The border-left-width is handled dynamically via Tailwind class border-l-[8px] */
-
-        /* Button base */
-        .primary-btn {
-            transition: all 0.3s ease;
-        }
-
-        /* Table styling */
-        .lesson-table th, .lesson-table td {
-            padding: 6px 10px !important; /* Smaller compact padding from original HTML */
-            text-align: left;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .lesson-table th {
-            background-color: #f7f8fc;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #4b5563;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .lesson-table tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-        .lesson-table tbody tr:hover {
-            background-color: #eff6ff;
-        }
-        .lesson-table strong {
-            color: #1d4ed8;
-        }
-        .lesson-table code {
-            background-color: #e0e7ff;
-            color: #4338ca;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        
-        /* Specific Overrides for Compact UI from the original HTML style block */
-        .p-6 {
-            padding: 1rem !important;
-        }
-
-        .space-y-6 > * + * {
-            margin-top: 1rem !important;
-        }
-        .space-y-2 > * + * {
-            margin-top: 0.3rem !important;
-        }
-
-        .lesson-content p {
-            margin-bottom: 0.75rem !important;
-        }
-
-        .lesson-content h3 {
-            margin-bottom: 0.4rem !important;
-        }
-
-        .lesson-content code {
-            padding: 8px !important;
-            font-size: 0.95rem !important;
-        }
-
-        .lesson-table th {
-            font-size: 0.95rem !important;
-        }
-
-        .lesson-content div {
-            margin-bottom: 0.75rem !important;
-        }
-        
-        .line-through-red {
-            text-decoration: line-through;
-            color: #ef4444; /* red-500 */
-        }
-    `;
-
-    // Inject the custom styles into the DOM once
+const FormalAdjectiveGuide: React.FC = () => {
+    // Inject custom styles globally, as in the original HTML file's <style> block
     useEffect(() => {
-        const styleTag = document.createElement('style');
-        styleTag.innerHTML = customStyles;
-        document.head.appendChild(styleTag);
+        const styleElement = document.createElement('style');
+        styleElement.textContent = customStyles;
+        document.head.appendChild(styleElement);
         return () => {
-            document.head.removeChild(styleTag);
+            document.head.removeChild(styleElement);
         };
     }, []);
 
-    const lessonIds = Object.keys(lessonContent);
 
     return (
         <div>
-            <header className="text-center mb-12">
+            <header className="text-center mt-12">
                 <h1 className="text-5xl font-extrabold text-blue-900 mb-3 tracking-tight">
-                    Formal Adjective Guide
+                    Mastering Essay Writing: Types, Structures, and Strategies
                 </h1>
                 <p className="text-xl text-gray-500 font-light">
-                    All 8 lessons for formal adjective usage are available below.
+                    Learn how to write clear, effective essays across all major types, from narrative and descriptive to specific formats. This comprehensive guide covers structure, organization, and practical strategies, helping you craft essays that communicate ideas with clarity and impact.
                 </p>
             </header>
 
             <div className="max-w-5xl mx-auto min-h-screen">
                 <main id="content-area" className="p-4 md:p-8 space-y-8">
-                    {lessonIds.map(id => (
-                        <LessonCard key={id} lessonId={id} />
-                    ))}
+                    {/* Iterate over the lesson content data */}
+                    {Object.keys(lessonContent).map((key) => {
+                        const lessonId = key as LessonId;
+                        return (
+                            <LessonCard
+                                key={lessonId}
+                                lessonId={lessonId}
+                                lesson={lessonContent[lessonId]}
+                                lessonColor={lessonColors[lessonId]}
+                            />
+                        );
+                    })}
                 </main>
             </div>
         </div>
     );
 };
+
 export default FormalAdjectiveGuide;
-
-

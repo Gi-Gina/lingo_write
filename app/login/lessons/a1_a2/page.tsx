@@ -27,6 +27,12 @@ const FormalAdjectiveGuide = React.lazy(() =>
   }))
 );
 
+const AdjectiveGuide = React.lazy(() =>
+  import("./adverb/page").then((mod) => ({
+    default: mod.default,
+  }))
+);
+
 export default function A1A2Lessons() {
   const [showParts, setShowParts] = useState(false);
   const [showPunct, setShowPunct] = useState(false);
@@ -144,6 +150,8 @@ export default function A1A2Lessons() {
         </div>
       )}
       </div>
+      {/* ================= ADVERBS ================= */}
+
     </div>
   );
 }
