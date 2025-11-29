@@ -44,17 +44,17 @@ export default function Dashboard() {
         <ul>
           <li className="p-5 hover:bg-blue-300 cursor-pointer"
               onClick={() => setActiveSection("a1")}>
-            A1 - A2
+            Level 1
           </li>
 
           <li className="p-5 hover:bg-blue-300 cursor-pointer"
               onClick={() => setActiveSection("b1")}>
-            B1 - B2
+            Level 2
           </li>
 
           <li className="p-5 hover:bg-blue-300 cursor-pointer"
               onClick={() => setActiveSection("c1")}>
-            C1 - C2
+            Level 3
           </li>
 
           <li className="p-5 hover:bg-blue-300 cursor-pointer"
