@@ -25,7 +25,7 @@ export default function A1A2Lessons() {
           onClick={() => setShowQuanti(true)}
           className="mt-4 ml-6 text-blue-600 hover:underline"
         >
-          View: Parts of Speech
+          View: Quantifier
         </button>
       ) : (
         <div className="mt-6">
