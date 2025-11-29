@@ -33,12 +33,19 @@ const FormalAdverbGuide = React.lazy(() =>
   }))
 );
 
+const ConjunctionLesson = React.lazy(() =>
+  import("./conjunction_1/page").then((mod) => ({
+    default: mod.default,
+  }))
+);
+
 export default function A1A2Lessons() {
   const [showParts, setShowParts] = useState(false);
   const [showPunct, setShowPunct] = useState(false);
   const [showPreps, setShowPreps] = useState(false);
   const [showAdj, setShowAdj] = useState(false);
   const [showAdv, setShowAdv] = useState(false);
+  const [showConj, setShowConj] = useState(false);
 
   return (
     <div className="p-10">
@@ -173,6 +180,31 @@ export default function A1A2Lessons() {
               <FormalAdverbGuide />
             </Suspense>
           </div>
+        </div>
+      )}
+      </div>
+      {/* ================= CONJUNCTIONS ================= */}
+      <div>
+      {!showConj ? (
+        <button
+          onClick={() => setShowConj(true)}  
+          className="mt-4 ml-6 text-blue-600 hover:underline"
+        >
+          View: Conjunctions
+        </button>  
+      ) : (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowConj(false)}  
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          > 
+            ← Back to Lessons
+          </button>   
+          <div className="bg-white rounded-lg shadow p-4">
+            <Suspense fallback={<div>Loading Conjunctions…</div>}>
+              <ConjunctionLesson />
+            </Suspense>
+          </div>  
         </div>
       )}
       </div>

@@ -339,15 +339,15 @@ const replaceColorClasses = (html: string, lessonColor: string) => {
         html: `
             <p class="text-lg text-gray-700 mb-6">When an adverb or adverbial phrase begins a sentence and modifies the entire clause (often expressing the writer's attitude or setting the context), it must be followed by a comma.</p>
             <div class="space-y-6">
-                <div class="p-6 bg-orange-50 border border-orange-200 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-orange-800 mb-2">A. Single Initial Adverb</h3>
+                <div class="p-6 bg-indigo-50 border border-indigo-200 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-indigo-800 mb-2">A. Single Initial Adverb</h3>
                     <p class="text-gray-700 mb-4">This signals the writer's attitude toward the sentence's content.</p>
                     <code class="block p-4 bg-gray-100 rounded text-gray-800 border-l-4 border-orange-500">
                         <strong>Crucially,</strong> the variables must be separated for accurate testing.
                     </code>
                 </div>
-                <div class="p-6 bg-orange-50 border border-orange-200 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-orange-800 mb-2">B. Initial Adverbial Phrase</h3>
+                <div class="p-6 bg-indigo-50 border border-indigo-200 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-indigo-800 mb-2">B. Initial Adverbial Phrase</h3>
                     <p class="text-gray-700 mb-4">Sets a formal temporal or spatial context.</p>
                     <code class="block p-4 bg-gray-100 rounded text-gray-800 border-l-4 border-orange-500">
                         <strong>After a careful review of the literature,</strong> the hypothesis was revised.

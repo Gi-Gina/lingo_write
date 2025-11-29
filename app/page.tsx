@@ -18,8 +18,10 @@ export default function Home() {
           </p>
         </div>
         <div className="mt-5 mb-10">
-        <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl hover:bg-blue-600" >
-            Start Exercises
+        <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl hover:bg-blue-600">
+          <Link href="/login/home">
+            Get Started
+          </Link>
         </button>
         </div>
     </div>
