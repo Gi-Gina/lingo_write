@@ -11,14 +11,6 @@ const customStyles = `
         font-family: 'Inter', sans-serif;
         background-color: #f5f5f4;
     }
-    .main-container {
-        max-width: 1400px;
-        margin: 2rem auto;
-        background-color: white;
-        border-radius: 1.5rem;
-        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
-        padding: 2rem;
-    }
     .section-card {
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         transition: transform 0.3s ease;
@@ -49,7 +41,7 @@ const QualifierReferenceGuide: React.FC = () => {
 
             {/* Note: The original <body> tag wrapper is simulated here by the top-level div 
                 and the body-specific CSS applied via the style tag. */}
-            <div className="main-container">
+            <div>
                 
                 <header className="text-center mb-6 mt-6">
                     <h1 className="text-5xl font-extrabold text-blue-900 mb-3 tracking-tight">

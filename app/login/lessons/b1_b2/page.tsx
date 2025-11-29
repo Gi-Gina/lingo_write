@@ -8,9 +8,15 @@ const QuantifierReferenceGuide = React.lazy(() =>
     default: mod.default,
   }))
 );
-
+const QualifierReferenceGuide = React.lazy(() =>
+  import("./qualifier/page").then((mod) => ({
+    default: mod.default,
+  }))
+);
 export default function A1A2Lessons() {
   const [showQuanti, setShowQuanti] = useState(false);
+  const [showQuali, setShowQuali] = useState(false);
+
   return (
     <div className="p-10">
       <h1 className="text-3xl font-bold mb-5">A1 - A2 Lessons</h1>
@@ -39,6 +45,32 @@ export default function A1A2Lessons() {
           <div className="bg-white rounded-lg shadow p-4">
             <Suspense fallback={<div>Loading Parts of Speech…</div>}>
               <QuantifierReferenceGuide />
+            </Suspense>
+          </div>
+        </div>
+      )}
+      </div>
+       {/* ================= Qualifier ================= */}
+      <div>
+        {!showQuali ? (
+        <button 
+          onClick={() => setShowQuali(true)}
+          className="mt-4 ml-6 text-blue-600 hover:underline"
+        >   
+          View: Qualifier
+        </button>
+      ) : (
+        <div className="mt-6">
+
+          <button
+            onClick={() => setShowQuali(false)}
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          >
+            ← Back to Lessons
+          </button>
+          <div className="bg-white rounded-lg shadow p-4">
+            <Suspense fallback={<div>Loading Qualifier…</div>}>
+              <QualifierReferenceGuide />
             </Suspense>
           </div>
         </div>
