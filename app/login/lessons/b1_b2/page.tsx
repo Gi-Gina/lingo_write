@@ -13,9 +13,15 @@ const QualifierReferenceGuide = React.lazy(() =>
     default: mod.default,
   }))
 );
+const ConjunctionLessonPage = React.lazy(() =>
+  import("./conjunction_2/page").then((mod) => ({
+    default: mod.default,
+  }))
+);
 export default function A1A2Lessons() {
   const [showQuanti, setShowQuanti] = useState(false);
   const [showQuali, setShowQuali] = useState(false);
+  const [showConj, setShowConj] = useState(false);
 
   return (
     <div className="p-10">
@@ -71,6 +77,32 @@ export default function A1A2Lessons() {
           <div className="bg-white rounded-lg shadow p-4">
             <Suspense fallback={<div>Loading Qualifier…</div>}>
               <QualifierReferenceGuide />
+            </Suspense>
+          </div>
+        </div>
+      )}
+      </div>
+       {/* ================= Conjunction ================= */}
+      <div>
+        {!showConj ? (
+        <button
+          onClick={() => setShowConj(true)}
+          className="mt-4 ml-6 text-blue-600 hover:underline"
+        >
+          View: Conjunction
+        </button>
+      ) : (
+        <div className="mt-6">
+
+          <button
+            onClick={() => setShowConj(false)}
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          >
+            ← Back to Lessons
+          </button>
+          <div className="bg-white rounded-lg shadow p-4">
+            <Suspense fallback={<div>Loading Conjunction…</div>}>
+              <ConjunctionLessonPage />
             </Suspense>
           </div>
         </div>
