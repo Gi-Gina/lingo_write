@@ -18,10 +18,16 @@ const ConjunctionLessonPage = React.lazy(() =>
     default: mod.default,
   }))
 );
+const PrepositionsLesson = React.lazy(() =>
+  import("./preposition_2/page").then((mod) => ({
+    default: mod.default,
+  }))
+);
 export default function A1A2Lessons() {
   const [showQuanti, setShowQuanti] = useState(false);
   const [showQuali, setShowQuali] = useState(false);
   const [showConj, setShowConj] = useState(false);
+  const [showPreps, setShowPreps] = useState(false);
 
   return (
     <div className="p-10">
@@ -103,6 +109,31 @@ export default function A1A2Lessons() {
           <div className="bg-white rounded-lg shadow p-4">
             <Suspense fallback={<div>Loading Conjunction…</div>}>
               <ConjunctionLessonPage />
+            </Suspense>
+          </div>
+        </div>
+      )}
+      </div>
+      {/* ================= Prepositions ================= */}
+      <div>
+      {!showPreps ? (
+        <button
+          onClick={() => setShowPreps(true)}
+          className="mt-4 ml-6 text-blue-600 hover:underline"
+        >
+          View: Prepositions
+        </button>
+      ) : (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowPreps(false)}
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          >
+            ← Back to Lessons
+          </button>
+          <div className="bg-white rounded-lg shadow p-4">
+            <Suspense fallback={<div>Loading Prepositions…</div>}>
+              <PrepositionsLesson />
             </Suspense>
           </div>
         </div>
