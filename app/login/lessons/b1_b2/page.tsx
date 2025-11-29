@@ -1,17 +1,49 @@
 "use client";
 
-import QualifierReferenceGuide from "./qualifier/page";
-import QuantifierReferenceGuide from "./quantifier/page";
+import React, { useState, Suspense } from "react";
 
-export default function B1B2Lessons() {
+// --- LAZY IMPORTS (MUST IMPORT CLIENT COMPONENTS ONLY) ---
+const QuantifierReferenceGuide = React.lazy(() =>
+  import("./quantifier/page").then((mod) => ({
+    default: mod.default,
+  }))
+);
+
+export default function A1A2Lessons() {
+  const [showQuanti, setShowQuanti] = useState(false);
   return (
     <div className="p-10">
-      <h1 className="text-3xl font-bold mb-5">C1 - C2 Lessons</h1>
+      <h1 className="text-3xl font-bold mb-5">A1 - A2 Lessons</h1>
       <p className="text-lg">
-        Welcome to the C1 - C2 English lessons. Here you will find advanced-level materials to help you refine your English grammar, vocabulary, and writing skills to a proficient level.
+        Welcome to the A1 - A2 English lessons. Here you will find beginner-level materials to help you build a strong foundation in English grammar, vocabulary, and writing skills.
       </p>
-      <QualifierReferenceGuide />
-      <QuantifierReferenceGuide />
+
+      {/* ================= PARTS OF SPEECH ================= */}
+      <div>
+        {!showQuanti ? (
+        <button
+          onClick={() => setShowQuanti(true)}
+          className="mt-4 ml-6 text-blue-600 hover:underline"
+        >
+          View: Parts of Speech
+        </button>
+      ) : (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowQuanti(false)}
+            className="mb-4 text-sm text-gray-600 hover:underline"
+          >
+            ← Back to Lessons
+          </button>
+
+          <div className="bg-white rounded-lg shadow p-4">
+            <Suspense fallback={<div>Loading Parts of Speech…</div>}>
+              <QuantifierReferenceGuide />
+            </Suspense>
+          </div>
+        </div>
+      )}
+      </div>
     </div>
   );
 }
